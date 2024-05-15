@@ -62,7 +62,6 @@ yarn build
 ### Типы данных
 
 ```TypeScript
-Часть 1: Model
 /*
     Описание всех возможных категорий товаров
 */
@@ -103,7 +102,6 @@ export interface IOrder {
   phone: string; // Телефон
 }
 
-Часть 2: View
 /*
   Интерфейс для карточки товара
 */
@@ -151,7 +149,6 @@ export interface IContactView {
   email: string; // Электронная почта
 }
 
-Часть 3: Presenter
 /*
   Интерфейс для внутреннего состояния приложения
 */
@@ -176,147 +173,198 @@ interface IAppState {
 
 ```
 
+### Описание моделей данных
+```TypeScript
+
+/**
+ * Абстрактный класс, представляющий базовую модель, отличаемую от простых объектов с данными.
+ */
+abstract class Model<T> {
+  // Принимает данные для хранения и экземпляр эмиттера событий.
+  constructor(data: Partial<T>, protected events: IEvents) {}
+
+  // Метод для вызова события.
+  emitChanges(event: string, payload?: object) {}
+}
+
+/*
+ * Класс, представляющий состояние приложения.
+ * */
+export class AppState extends Model<IAppState> {
+  // Корзина с товарами.
+  basket: Product[] = [];
+
+  // Массив, содержащий все товары.
+  store: Product[];
+
+  // Объект заказа клиента.
+  order: IOrder = {
+    items: [],
+    payment: '',
+    total: null,
+    address: '',
+    email: '',
+    phone: '',
+  };
+
+  // Объект с ошибками формы.
+  formErrors: FormErrors = {};
+
+  // Метод для добавления товара в корзину.
+  addToBasket(value: Product): void;
+
+  // Метод для удаления товара из корзины.
+  deleteFromBasket(id: string): void;
+
+  // Метод для полной очистки корзины.
+  clearBasket(): void;
+
+  // Метод для получения количества товаров в корзине.
+  getBasketAmount(): number;
+
+  // Метод для получения общей стоимости товаров в корзине.
+  getTotalBasketPrice(): number;
+
+  // Метод для добавления ID товаров из корзины в поле items для заказа.
+  setItems(): void;
+
+  // Метод для заполнения полей email, phone, address, payment в заказе.
+  setOrderField(field: keyof IOrderForm, value: string): void;
+
+  // Валидация формы для блока "контакты".
+  validateContacts(): boolean;
+
+  // Валидация формы для блока "заказ".
+  validateOrder(): boolean;
+
+  // Очистить заказ после покупки товаров.
+  refreshOrder(): boolean;
+
+  // Метод для преобразования данных, полученных с сервера, в типы данных приложения.
+  setStore(items: IProduct[]): void;
+
+  // Метод для обновления поля selected во всех товарах после покупки.
+  resetSelected(): void;
+}
+
+```
+
 ### Классы представления
 ```TypeScript
 
-Часть 1: Model
-
 /**
- * Базовый компонент
+ * Абстрактный компонент, представляющий базовый элемент.
  */
 abstract class Component<T> {
-  constructor(protected readonly container: HTMLElement);
+  // Конструктор, принимающий родительский элемент.
+  protected constructor(protected readonly container: HTMLElement) {}
 
+  // Метод для переключения класса.
   toggleClass(element: HTMLElement, className: string, force?: boolean): void;
 
+  // Метод для установки текстового содержимого.
   protected setText(element: HTMLElement, value: string): void;
 
+  // Метод для изменения статуса блокировки.
   setDisabled(element: HTMLElement, state: boolean): void;
 
+  // Метод для скрытия элемента.
   protected setHidden(element: HTMLElement): void;
 
+  // Метод для отображения элемента.
   protected setVisible(element: HTMLElement): void;
 
+  // Метод для установки изображения с альтернативным текстом.
   protected setImage(el: HTMLImageElement, src: string, alt?: string): void;
 
+  // Метод для возврата корневого DOM-элемента.
   render(data?: Partial<T>): HTMLElement;
 }
 
 /*
-  * Класс для главной страницы
-  * */
+ * Класс, представляющий главную страницу.
+ * */
 class Page extends Component<IPage> {
+  // Ссылки на внутренние элементы.
   protected _counter: HTMLElement;
   protected _store: HTMLElement;
   protected _wrapper: HTMLElement;
   protected _basket: HTMLElement;
 
+  // Конструктор, принимающий родительский элемент и экземпляр событий.
   constructor(container: HTMLElement, protected events: IEvents);
 
+  // Сеттер для счетчика товаров в корзине.
   set counter(value: number);
 
+  // Сеттер для карточек товаров на странице.
   set store(items: HTMLElement[]);
 
+  // Сеттер для блока прокрутки.
   set locked(value: boolean);
 }
 
 /*
-    Класс для карточки товара
+ * Класс, представляющий карточку товара.
 */
 class Card extends Component<ICard> {
+  // Ссылки на внутренние элементы карточки.
   protected _title: HTMLElement;
   protected _image: HTMLImageElement;
   protected _category: HTMLElement;
   protected _price: HTMLElement;
   protected _button: HTMLButtonElement;
 
+  // Конструктор, принимающий имя блока, родительский элемент и колбэк функции.
   constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions);
 
+  // Сеттер и геттер для уникального ID.
   set id(value: string);
   get id(): string;
 
+  // Сеттер и геттер для названия.
   set title(value: string);
   get title(): string;
 
+  // Сеттер для изображения.
   set image(value: string);
 
+  // Сеттер для определения выбран товар или нет.
   set selected(value: boolean);
 
+  // Сеттер для цены.
   set price(value: number | null);
 
+  // Сеттер для категории.
   set category(value: CategoryType);
 }
 
 /*
-  * Класс для корзины товаров
-  * */
+ * Класс, представляющий корзину товаров.
+ * */
 export class Basket extends Component<IBasket> {
+  // Ссылки на внутренние элементы.
   protected _list: HTMLElement;
   protected _price: HTMLElement;
   protected _button: HTMLButtonElement;
 
+  // Конструктор, принимающий имя блока, родительский элемент и экземпляр событий.
   constructor(protected blockName: string, container: HTMLElement, protected events: IEvents);
 
+  // Сеттер для общей цены.
   set price(price: number);
 
+  // Сеттер для списка товаров.
   set list(items: HTMLElement[]);
 
+  // Метод для отключения кнопки "Оформить".
   disableButton(): void;
 
+  // Метод для обновления индексов таблички при удалении товара из корзины.
   refreshIndices(): void;
 }
 
-Часть 2: View
-
 /*
-  * Класс для окошка заказа товара
-  * */
-export class Order extends Form<IOrder> {
-  protected _card: HTMLButtonElement;
-  protected _cash: HTMLButtonElement;
+ * Класс, представляющий форму заказа товар*/
 
-  constructor(protected blockName: string, container: HTMLFormElement, protected events: IEvents);
-
-  disableButtons(): void;
-}
-
-/*
-  * Класс для окошка контактов
-  * */
-export class Contacts extends Form<IContacts> {
-  constructor(container: HTMLFormElement, events: IEvents);
-}
-
-/**
- * Класс для работы с Api
- */
-class Api {
-  readonly baseUrl: string;
-  protected options: RequestInit;
-
-  constructor(baseUrl: string, options: RequestInit = {});
-
-  protected async handleResponse(response: Response): Promise<Partial<object>>;
-
-  async get(uri: string);
-
-  async post(uri: string, data: object);
-}
-
-/**
- * Обработчик событий
- */
-class EventEmitter implements IEvents {
-  _events: Map<EventName, Set<Subscriber>>;
-
-  constructor() {}
-
-  on<T extends object>(eventName: EventName, callback: (event: T) => void) {}
-
-  off(eventName: EventName, callback: Subscriber) {}
-
-  emit<T extends object>(eventName: string, data?: T) {}
-}
-
-Часть 3: Presenter
 Компоненты Presenter - реализуются в index.ts
