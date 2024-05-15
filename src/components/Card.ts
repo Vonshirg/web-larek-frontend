@@ -1,8 +1,8 @@
-import { Component } from './base/Component';
-import { CategoryType } from '../types';
+import { Component } from './base/component';
+import { CategoryType, categoryMapping } from '../types';
 import { ensureElement, handlePrice } from '../utils/utils';
 import { CDN_URL } from '../utils/constants';
-import { categoryMapping } from '../utils/constants';
+
 
 interface ICardActions {
   onClick: (event: MouseEvent) => void;

@@ -1,5 +1,5 @@
 import { IEvents } from './base/events';
-import { Form } from './common/Form';
+import { Form } from './base/form';
 
 export class Contacts extends Form<IContacts> {
   constructor(

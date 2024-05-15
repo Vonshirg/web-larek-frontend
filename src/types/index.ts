@@ -17,16 +17,6 @@ export interface ApiResponse {
   items: IProduct[];
 }
 
-export interface IProduct {
-  id: string;
-  description: string;
-  image: string;
-  title: string;
-  category: CategoryType;
-  price: number | null;
-  selected: boolean;
-}
-
 export interface IAppState {
   basket: Product[];
   store: Product[];
@@ -61,3 +51,21 @@ export interface IOrderForm {
   email: string;
   phone: string;
 }
+
+export interface IProduct {
+  id: string;
+  description: string;
+  image: string;
+  title: string;
+  category: CategoryType;
+  price: number | null;
+  selected: boolean;
+}
+
+export const categoryMapping: CategoryMapping = {
+  другое: 'card__category_other',
+  'софт-скил': 'card__category_soft',
+  дополнительное: 'card__category_additional',
+  кнопка: 'card__category_button',
+  'хард-скил': 'card__category_hard',
+};

@@ -1,6 +1,6 @@
 import { IProduct } from '../types';
 import { handlePrice } from '../utils/utils';
-import { Component } from './base/Component';
+import { Component } from './base/component';
 import { IEvents } from './base/events';
 
 export interface IBasket {
