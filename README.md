@@ -529,3 +529,6 @@ export interface IProduct {
   selected: boolean;
 }
 ```
+
+## UML схема
+![](UML.jpg)
