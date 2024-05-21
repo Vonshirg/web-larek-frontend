@@ -1,111 +1,161 @@
-import { Component } from './base/component';
-import { CategoryType, categoryMapping } from '../types';
-import { ensureElement, handlePrice } from '../utils/utils';
+import { Component } from './Data';
+import { CategoryType, ICard, IClickMouseEvent, IPageElements, IPage } from '../types/types';
+import { ensureElement} from '../utils/utils';
 import { CDN_URL } from '../utils/constants';
+import { IEvents } from './base/Events';
 
 
-interface ICardActions {
-  onClick: (event: MouseEvent) => void;
+
+// Интерфейс для элементов карточки
+interface ICardElements {
+  title: HTMLElement;
+  image: HTMLImageElement;
+  category: HTMLElement;
+  price: HTMLElement;
+  button: HTMLButtonElement | null; // Может быть null, если кнопка не найдена
 }
 
-export interface ICard {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  image: string;
-  price: number | null;
-  selected: boolean;
+// Классы для категорий карточек
+const categoryClasses: Record<CategoryType, string> = {
+  [CategoryType.OTHER]: 'card__category_other',
+  [CategoryType.SOFT_SKILL]: 'card__category_soft',
+  [CategoryType.ADDITIONAL]: 'card__category_additional',
+  [CategoryType.BUTTON]: 'card__category_button',
+  [CategoryType.HARD_SKILL]: 'card__category_hard',
+};
+
+function formatPrice(price: number): string {
+	const priceStr = price.toString();
+	return priceStr.length < 5
+			? priceStr
+			: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
+// Класс для карточки товара
 export class Card extends Component<ICard> {
-  protected _title: HTMLElement;
-  protected _image: HTMLImageElement;
-  protected _category: HTMLElement;
-  protected _price: HTMLElement;
-  protected _button: HTMLButtonElement;
+  protected elements: ICardElements;
 
-
-  constructor(
-    protected blockName: string,
-    container: HTMLElement,
-    actions?: ICardActions
-  ) {
+  constructor(container: HTMLElement, actions?: IClickMouseEvent) {
     super(container);
 
-    this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
-    this._image = ensureElement<HTMLImageElement>(
-      `.${blockName}__image`,
-      container
-    );
-    this._button = container.querySelector(`.${blockName}__button`);
-    this._category = container.querySelector(`.${blockName}__category`);
-    this._price = container.querySelector(`.${blockName}__price`);
+    // Получение элементов DOM и объединение их в объект
+    this.elements = {
+      title: ensureElement<HTMLElement>('.card__title', container),
+      image: ensureElement<HTMLImageElement>('.card__image', container),
+      category: container.querySelector('.card__category')!,
+      price: container.querySelector('.card__price')!,
+      button: container.querySelector('.card__button'),
+    };
 
-    if (actions?.onClick) {
-      if (this._button) {
-        this._button.addEventListener('click', actions.onClick);
-      } else {
-        container.addEventListener('click', actions.onClick);
-      }
+    // Добавление обработчика события на кнопку или контейнер
+    actions?.onClick &&(this.elements.button? this.elements.button.addEventListener('click', actions.onClick): container.addEventListener('click', actions.onClick));
+  }
+
+  // Установка цены
+  set price(value: number | null) {
+    this.elements.price.textContent = value
+      ? formatPrice(value) + ' синапсов'
+      : 'Бесценно';
+    if (this.elements.button) {
+      this.elements.button.disabled = !value;
     }
   }
-
-  set id(value: string) {
-    this.container.dataset.id = value;
+// Установка и получение ID
+set id(value: string) {
+	this.container.dataset.id = value;
+}
+get id(): string {
+	return this.container.dataset.id || '';
+}
+  // Установка категории
+  set category(value: CategoryType) {
+    this.elements.category.textContent = value;
+    this.elements.category.classList.add(categoryClasses[value]);
   }
-  get id(): string {
-    return this.container.dataset.id || '';
-  }
 
+  // Установка и получение заголовка
   set title(value: string) {
-    this._title.textContent = value;
+    this.elements.title.textContent = value;
   }
   get title(): string {
-    return this._title.textContent || '';
+    return this.elements.title.textContent || '';
   }
 
+  // Установка изображения
   set image(value: string) {
-    this._image.src = CDN_URL + value;
+    this.elements.image.src = CDN_URL + value;
   }
 
+  // Установка состояния "selected"
   set selected(value: boolean) {
-    if (!this._button.disabled) {
-      this._button.disabled = value;
+    if (this.elements.button) {
+      this.elements.button.disabled = value;
     }
-  }
-
-  set price(value: number | null) {
-    this._price.textContent = value
-      ? handlePrice(value) + ' синапсов'
-      : 'Бесценно';
-    if (this._button && !value) {
-      this._button.disabled = true;
-    }
-  }
-
-  set category(value: CategoryType) {
-    this._category.textContent = value;
-    this._category.classList.add(categoryMapping[value]);
   }
 }
 
+// Класс для элемента магазина
 export class StoreItem extends Card {
-  constructor(container: HTMLElement, actions?: ICardActions) {
-    super('card', container, actions);
+  constructor(container: HTMLElement, actions?: IClickMouseEvent) {
+    super(container, actions);
   }
 }
 
+// Класс для предварительного просмотра элемента магазина
 export class StoreItemPreview extends Card {
-  protected _description: HTMLElement;
+  protected description: HTMLElement; // Изменение имени свойства
 
-  constructor(container: HTMLElement, actions?: ICardActions) {
-    super('card', container, actions);
-
-    this._description = container.querySelector(`.${this.blockName}__text`);
+  constructor(container: HTMLElement, actions?: IClickMouseEvent) {
+    super(container, actions);
+    this.description = container.querySelector('.card__text')!;
   }
 
-  set description(value: string) {
-    this._description.textContent = value;
+  // Установка текста описания
+  set descriptionText(value: string) {
+    this.description.textContent = value;
+  }
+}
+
+// Класс для страницы
+export class Page extends Component<IPage> {
+  protected elements: IPageElements;
+
+  constructor(container: HTMLElement, protected events: IEvents) {
+    super(container);
+
+    // Получение элементов DOM и объединение их в объект
+    this.elements = {
+      counter: ensureElement<HTMLElement>('.header__basket-counter'),
+      wrapper: ensureElement<HTMLElement>('.page__wrapper'),
+      basket: ensureElement<HTMLElement>('.header__basket'),
+      store: ensureElement<HTMLElement>('.gallery'),
+    };
+
+    // Добавление обработчика события на корзину
+    this.elements.basket.addEventListener('click', () => {
+      this.events.emit('basket:open');
+    });
+  }
+
+  // Установка состояния "locked"
+  set lock(value: boolean) {
+    value
+      ? this.elements.wrapper.classList.add('page__wrapper_locked')
+      : this.elements.wrapper.classList.remove('page__wrapper_locked');
+  }
+
+  // Установка счетчика
+  set count(value: number) {
+    this.setText(this.elements.counter, String(value));
+  }
+
+  // Установка элементов магазина
+  set store(items: HTMLElement[]) {
+    const fragment = document.createDocumentFragment();
+    for (const item of items) {
+      fragment.appendChild(item);
+    }
+    this.elements.store.innerHTML = '';
+    this.elements.store.appendChild(fragment);
   }
 }

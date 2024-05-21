@@ -85,3 +85,17 @@ export class EventEmitter implements IEvents {
     }
 }
 
+
+export abstract class BaseModel<T> {
+    // Конструктор принимает данные частичного типа T и экземпляр IEvents
+    constructor(protected data: Partial<T>, protected events: IEvents) {
+      // Объединение данных с экземпляром класса
+      Object.assign(this, data);
+    }
+  
+    // Метод для эмиссии событий с типизированным параметром payload
+    emitChanges(event: string, payload: Record<string, any> = {}): void {
+      this.events.emit(event, payload);
+    }
+  }
+
