@@ -94,13 +94,6 @@ get id(): string {
   }
 }
 
-// Класс для элемента магазина
-export class StoreItem extends Card {
-  constructor(container: HTMLElement, actions?: IClickMouseEvent) {
-    super(container, actions);
-  }
-}
-
 // Класс для предварительного просмотра элемента магазина
 export class StoreItemPreview extends Card {
   protected description: HTMLElement; // Изменение имени свойства
@@ -150,7 +143,7 @@ export class Page extends Component<IPage> {
   }
 
   // Установка элементов магазина
-  set store(items: HTMLElement[]) {
+  set storeItem(items: HTMLElement[]) {
     const fragment = document.createDocumentFragment();
     for (const item of items) {
       fragment.appendChild(item);

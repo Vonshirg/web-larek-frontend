@@ -7,7 +7,7 @@ import { Basket, CartItem } from './components/Basket';
 import { Order, Contacts, Success } from './components/Order';
 import { IEvents } from './components/base/Events';
 import { Page } from './components/Card';
-import { StoreItem, StoreItemPreview } from './components/Card';
+import { Card, StoreItemPreview } from './components/Card';
 import { AppState } from './components/Data';
 import { ensureElement, cloneTemplate } from './utils/utils';
 
@@ -84,8 +84,8 @@ events.on('modal:close', closeModal);
 events.on('order:success', handleOrderSuccess);
 
 function updateStoreItems() {
-  page.store = appData.products.map((item) => {
-    const product = new StoreItem(cloneTemplate(storeProductTemplate), {
+  page.storeItem = appData.products.map((item) => {
+    const product = new Card(cloneTemplate(storeProductTemplate), {
       onClick: () => events.emit('card:select', item),
     });
     return product.render({
