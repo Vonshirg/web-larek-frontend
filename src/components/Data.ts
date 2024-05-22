@@ -1,4 +1,4 @@
-import { BaseModel } from './base/Eventss';
+import { BaseModel } from './base/Events';
 import { IAppState, IOrder, IOrderForm, IProduct, FormErrors } from '../types/types';
 
 const emptyOrder: IOrder = {
