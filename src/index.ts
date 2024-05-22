@@ -17,8 +17,8 @@ function createModal(container: HTMLElement, events: IEvents) {
   const content = ensureElement<HTMLElement>('.modal__content', container);
 
   closeButton.addEventListener('click', close);
-  container.addEventListener('click', close);
-  content.addEventListener('click', (event) => event.stopPropagation());
+  container.addEventListener('mousedown', close);
+  content.addEventListener('mousedown', (event) => event.stopPropagation());
 
   function setContent(value: HTMLElement) {
     content.replaceChildren(value);
@@ -192,4 +192,3 @@ function handleOrderSuccess(res: ApiListResponse<string>) {
     content: success.render({ description: res.total })
   })
 }
-

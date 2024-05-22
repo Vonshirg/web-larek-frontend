@@ -80,7 +80,7 @@ export class AppState extends BaseModel<IAppState> {
 
     // Проверка email и телефона через паттерны
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Простой паттерн для валидации email
-    const phonePattern = /^\+?[1-9]\d{1,14}$/; // Пример паттерна для международного номера телефона
+    const phonePattern = /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$|^\d+$/; // Пример паттерна для международного номера телефона
 
     if (!emailPattern.test(this.currentOrder.email)) {
       errors.email = 'Укажите корректный email';
