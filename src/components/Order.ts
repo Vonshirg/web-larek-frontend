@@ -1,4 +1,4 @@
-import { IEvents } from './base/Events';
+import { IEvents } from './base/Eventss';
 import { Component } from './Data';
 import { ensureElement } from '../utils/utils';
 import {

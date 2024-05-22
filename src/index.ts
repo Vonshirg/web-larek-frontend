@@ -1,11 +1,11 @@
 import './scss/styles.scss';
-import { Api, ApiListResponse } from './components/base/Api';
-import { EventEmitter } from './components/base/Events';
+import { Api, ApiListResponse } from './components/base/Apii';
+import { EventEmitter } from './components/base/Eventss';
 import { IOrderForm, IProduct } from './types/types';
 import { API_URL } from './utils/constants';
 import { Basket, CartItem } from './components/Basket';
 import { Order, Contacts, Success } from './components/Order';
-import { IEvents } from './components/base/Events';
+import { IEvents } from './components/base/Eventss';
 import { Page } from './components/Card';
 import { StoreItem, StoreItemPreview } from './components/Card';
 import { AppState } from './components/Data';

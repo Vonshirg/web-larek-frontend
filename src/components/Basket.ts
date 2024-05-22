@@ -4,7 +4,7 @@ import {
 	IComponentElements,
 	IProductBasket,
 } from '../types/types';
-import { IEvents } from './base/Events';
+import { IEvents } from './base/Eventss';
 import { Component } from './Data';
 
 

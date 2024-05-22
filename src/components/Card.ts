@@ -2,7 +2,7 @@ import { Component } from './Data';
 import { CategoryType, ICard, IClickMouseEvent, IPageElements, IPage } from '../types/types';
 import { ensureElement} from '../utils/utils';
 import { CDN_URL } from '../utils/constants';
-import { IEvents } from './base/Events';
+import { IEvents } from './base/Eventss';
 
 
 
