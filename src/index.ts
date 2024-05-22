@@ -11,7 +11,6 @@ import { StoreItem, StoreItemPreview } from './components/Card';
 import { AppState } from './components/Data';
 import { ensureElement, cloneTemplate } from './utils/utils';
 
-
 // Функция для создания модального окна
 function createModal(container: HTMLElement, events: IEvents) {
   const closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
