@@ -58,8 +58,8 @@ const templates = ['#card-catalog', '#card-preview', '#basket', '#card-basket', 
 const elements: HTMLTemplateElement[] = templates.map(selector => ensureElement<HTMLTemplateElement>(selector));
 const [storeProductTemplate, cardPreviewTemplate, basketTemplate, cardBasketTemplate, orderTemplate, contactsTemplate, successTemplate] = elements;
 
-const basket = new Basket( cloneTemplate(basketTemplate), events);
-const order = new Order(cloneTemplate(orderTemplate), events)
+const basket = new Basket(cloneTemplate(basketTemplate), events);
+const order = new Order(cloneTemplate(orderTemplate), events);
 const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), {
   onClick: () => modal.close()
@@ -149,8 +149,8 @@ function handleOrderInputChange(data: { field: keyof IOrderForm, value: string }
 }
 
 function handleOrderSubmit() {
-  appData.currentOrder.total = appData.calculateTotalCartPrice();
-  appData.updateOrderItems();
+  // Обновляем текущий заказ, вычисляя общую стоимость и список товаров
+  /*const preparedOrder = appData.prepareOrderForServer();*/
   modal.render({
     content: contacts.render({ valid: false, errors: [] }),
   });
@@ -170,7 +170,8 @@ function openBasket() {
 }
 
 function handleContactsSubmit() {
-  api.post('/order', appData.currentOrder)
+  const preparedOrder = appData.prepareOrderForServer(); // Подготавливаем заказ для отправки
+  api.post('/order', preparedOrder)
     .then((res) => {
       events.emit('order:success', res);
       appData.clearCart();

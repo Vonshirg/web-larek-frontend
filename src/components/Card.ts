@@ -13,6 +13,7 @@ interface ICardElements {
   category: HTMLElement;
   price: HTMLElement;
   button: HTMLButtonElement | null; // Может быть null, если кнопка не найдена
+  indexElement?: HTMLElement;
 }
 
 // Классы для категорий карточек
@@ -45,6 +46,7 @@ export class Card extends Component<ICard> {
       category: container.querySelector('.card__category')!,
       price: container.querySelector('.card__price')!,
       button: container.querySelector('.card__button'),
+      indexElement: container.querySelector('.basket__item-index')!
     };
 
     // Добавление обработчика события на кнопку или контейнер
@@ -90,6 +92,12 @@ get id(): string {
   set selected(value: boolean) {
     if (this.elements.button) {
       this.elements.button.disabled = value;
+    }
+  }
+  set index(value: number) {
+    const indexElement = this.container.querySelector('.card__index');
+    if (indexElement) {
+      indexElement.textContent = value.toString();
     }
   }
 }
