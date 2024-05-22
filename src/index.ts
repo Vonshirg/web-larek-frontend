@@ -3,7 +3,7 @@ import { Api, ApiListResponse } from './components/base/Api';
 import { EventEmitter } from './components/base/Events';
 import { IOrderForm, IProduct } from './types/types';
 import { API_URL } from './utils/constants';
-import { Basket, CartItem } from './components/Basket';
+import { Basket } from './components/Basket';
 import { Order, Contacts, Success } from './components/Order';
 import { IEvents } from './components/base/Events';
 import { Page } from './components/Card';
@@ -150,7 +150,7 @@ function handleOrderInputChange(data: { field: keyof IOrderForm, value: string }
 
 function handleOrderSubmit() {
   // Обновляем текущий заказ, вычисляя общую стоимость и список товаров
-  /*const preparedOrder = appData.prepareOrderForServer();*/
+  const preparedOrder = appData.prepareOrderForServer();
   modal.render({
     content: contacts.render({ valid: false, errors: [] }),
   });
@@ -159,7 +159,7 @@ function handleOrderSubmit() {
 function openBasket() {
   page.lock = true;
   const basketItems = appData.cart.map((item, index) => {
-    const storeItem = new CartItem(cloneTemplate(cardBasketTemplate), {
+    const storeItem = new Card(cloneTemplate(cardBasketTemplate), {
       onClick: () => events.emit('basket:delete', item)
     });
     return storeItem.render({ title: item.title, price: item.price, index: index + 1 });
@@ -168,6 +168,7 @@ function openBasket() {
     content: basket.render({ list: basketItems, price: appData.calculateTotalCartPrice() }),
   });
 }
+
 
 function handleContactsSubmit() {
   const preparedOrder = appData.prepareOrderForServer(); // Подготавливаем заказ для отправки
@@ -191,5 +192,5 @@ function closeModal() {
 function handleOrderSuccess(res: ApiListResponse<string>) {
   modal.render({
     content: success.render({ description: res.total })
-  })
+  });
 }

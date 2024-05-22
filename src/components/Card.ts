@@ -9,7 +9,7 @@ import { IEvents } from './base/Events';
 // Интерфейс для элементов карточки
 interface ICardElements {
   title: HTMLElement;
-  image: HTMLImageElement;
+  image?: HTMLImageElement | undefined;
   category: HTMLElement;
   price: HTMLElement;
   button: HTMLButtonElement | null; // Может быть null, если кнопка не найдена
@@ -42,15 +42,15 @@ export class Card extends Component<ICard> {
     // Получение элементов DOM и объединение их в объект
     this.elements = {
       title: ensureElement<HTMLElement>('.card__title', container),
-      image: ensureElement<HTMLImageElement>('.card__image', container),
-      category: container.querySelector('.card__category')!,
-      price: container.querySelector('.card__price')!,
+      image: container.querySelector('.card__image'),
+      category: container.querySelector('.card__category'),
+      price: container.querySelector('.card__price'),
       button: container.querySelector('.card__button'),
-      indexElement: container.querySelector('.basket__item-index')!
+      indexElement: container.querySelector('.basket__item-index')!,
     };
 
     // Добавление обработчика события на кнопку или контейнер
-    actions?.onClick &&(this.elements.button? this.elements.button.addEventListener('click', actions.onClick): container.addEventListener('click', actions.onClick));
+    actions?.onClick &&(this.elements.button ? this.elements.button.addEventListener('click', actions.onClick) : container.addEventListener('click', actions.onClick));
   }
 
   // Установка цены
@@ -62,13 +62,15 @@ export class Card extends Component<ICard> {
       this.elements.button.disabled = !value;
     }
   }
-// Установка и получение ID
-set id(value: string) {
-	this.container.dataset.id = value;
-}
-get id(): string {
-	return this.container.dataset.id || '';
-}
+
+  // Установка и получение ID
+  set id(value: string) {
+    this.container.dataset.id = value;
+  }
+  get id(): string {
+    return this.container.dataset.id || '';
+  }
+
   // Установка категории
   set category(value: CategoryType) {
     this.elements.category.textContent = value;
@@ -95,12 +97,12 @@ get id(): string {
     }
   }
   set index(value: number) {
-    const indexElement = this.container.querySelector('.card__index');
-    if (indexElement) {
-      indexElement.textContent = value.toString();
-    }
-  }
+		if (this.elements.indexElement) {
+			this.elements.indexElement.textContent = value.toString();
+		}
+	}
 }
+
 
 // Класс для предварительного просмотра элемента магазина
 export class StoreItemPreview extends Card {

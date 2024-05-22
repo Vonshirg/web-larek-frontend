@@ -14,6 +14,7 @@ export interface ICard {
 	image: string;
 	price: number | null;
 	selected: boolean;
+  index?: number;
 }
 
 export interface IPage {
