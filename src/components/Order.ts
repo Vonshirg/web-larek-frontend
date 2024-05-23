@@ -8,11 +8,11 @@ import {
 	IClickMouseEvent,
 } from '../types/types';
 
- function formatPrice(price: number): string {
+function formatPrice(price: number): string {
 	const priceStr = price.toString();
 	return priceStr.length < 5
-			? priceStr
-			: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+		? priceStr
+		: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
 
 export class Form<T> extends Component<FormState> {

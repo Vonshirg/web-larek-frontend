@@ -7,8 +7,6 @@ import {
 import { IEvents } from './base/Events';
 import { Component } from './Data';
 
-
-
 // Класс для корзины
 export class Basket extends Component<IBasket> {
 	private elements: IComponentElements;
@@ -63,7 +61,6 @@ export class Basket extends Component<IBasket> {
 function formatPrice(price: number): string {
 	const priceStr = price.toString();
 	return priceStr.length < 5
-			? priceStr
-			: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+		? priceStr
+		: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
-
