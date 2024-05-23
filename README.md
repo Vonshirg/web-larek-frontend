@@ -20,7 +20,6 @@ https://github.com/Vonshirg/web-larek-frontend.git
     - [Contacts](#contacts)
     - [Success](#success)
     - [Basket](#basket)
-    - [CartItem](#cartitem)
     - [Api](#api)
     - [EventEmitter](#eventemitter)
     - [BaseModel](#basemodel)
@@ -115,14 +114,14 @@ npm run build
 
 - `products: IProduct[]` - Список продуктов.
 - `cart: IProduct[]` - Товары в корзине.
-- `currentOrder: IOrder` - Текущий заказ.
+- `	currentOrder: Omit<IOrder, 'items' | 'total'> = emptyOrder` - Текущий заказ.
 - `validationErrors: FormErrors` - Ошибки валидации формы заказа.
 
 #### Методы
 
 - `constructor(events: IEvents)` - Инициализирует состояние приложения с переданными событиями.
+- `prepareOrderForServer(): IOrder ` - подготавливает объект для загрузки.
 - `removeProductFromCart(productId: string): void` - Удаляет товар из корзины по его идентификатору.
-- `updateOrderItems(): void` - Обновляет список товаров в текущем заказе.
 - `calculateTotalCartPrice(): number` - Рассчитывает общую стоимость товаров в корзине.
 - `deselectAllProducts(): void` - Снимает выделение со всех продуктов.
 - `addProductToCart(product: IProduct): void` - Добавляет товар в корзину.
@@ -136,7 +135,7 @@ npm run build
 
 ### Component
 
-Абстрактный класс `Component` является базовым Card, Basket, Form, Page.
+Абстрактный класс `Component` является базовым Card, Basket, Form, Page, Success.
 
 #### Свойства
 
@@ -183,7 +182,7 @@ npm run build
 #### Методы
 
 - `constructor(container: HTMLFormElement, events: IEvents)` - Инициализирует форму заказа.
-- `disableButtons(): void` - Отключает активность кнопок при неккоректной валидации.
+- `disableButtons(): void` - Отключает активность кнопок при неккоректной валидации(кнопки 'далее', 'сохранить').
 
 ### Contacts
 
@@ -222,21 +221,6 @@ npm run build
 - `set price(price: number)` - Устанавливает цену.
 - `disableButton(): void` - Отключает кнопку.
 - `refreshIndices(): void` - Обновляет индексы элементов списка.
-
-### CartItem
-
-Класс `CartItem` представляет элемент корзины.
-
-#### Свойства
-
-- `elements: IComponentElements` - Элементы корзины.
-
-#### Методы
-
-- `constructor(container: HTMLElement, actions?: IClickMouseEvent)` - Инициализирует элемент корзины.
-- `set title(value: string)` - Устанавливает заголовок.
-- `set price(value: number)` - Устанавливает цену.
-- `set index(value: number)` - Устанавливает индекс.
 
 ### Api
 
