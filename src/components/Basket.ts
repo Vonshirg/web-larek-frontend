@@ -1,8 +1,6 @@
 import {
 	IBasket,
-	IClickMouseEvent,
-	IComponentElements,
-	IProductBasket,
+	IComponentElements
 } from '../types/types';
 import { IEvents } from './base/Events';
 import { Component } from './Data';
