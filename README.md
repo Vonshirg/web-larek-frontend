@@ -136,7 +136,7 @@ npm run build
 
 ### Component
 
-Абстрактный класс `Component` является базовым для всех компонентов.
+Абстрактный класс `Component` является базовым Card, Basket, Form, Page.
 
 #### Свойства
 
@@ -183,7 +183,7 @@ npm run build
 #### Методы
 
 - `constructor(container: HTMLFormElement, events: IEvents)` - Инициализирует форму заказа.
-- `disableButtons(): void` - Отключает активность кнопок.
+- `disableButtons(): void` - Отключает активность кнопок при неккоректной валидации.
 
 ### Contacts
 
@@ -413,14 +413,6 @@ export interface IAppState {
   store: IProduct[];
   order: IOrder;
   formErrors: FormErrors;
-  manageBasket: {
-    addToBasket(value: IProduct): void;
-    deleteFromBasket(id: string): void;
-    clearBasket(): void;
-    getBasketAmount(): number;
-    getTotalBasketPrice(): number;
-    setItems(): void;
-  };
   setOrderField(field: keyof IOrderForm, value: string): void;
   validateContacts(): boolean;
   validateOrder(): boolean;
