@@ -103,9 +103,12 @@ function handleCardSelect(item: IProduct) {
   const product = new StoreItemPreview(cloneTemplate(cardPreviewTemplate), {
     onClick: () => events.emit('card:toBasket', item),
   });
-  modal.render({
+  if(!item.price){modal.render({
+    content: product.render({ ...item, selected: true }),
+  });} else{modal.render({
     content: product.render({ ...item, selected: item.selected }),
-  });
+  });}
+  
 }
 
 function handleCardToBasket(item: IProduct) {
@@ -120,6 +123,7 @@ function handleBasketDelete(item: IProduct) {
   item.selected = false;
   basket.price = appData.calculateTotalCartPrice();
   page.count = appData.getCartItemCount();
+  openBasket();
   basket.refreshIndices();
   if (!appData.cart.length) {
     basket.disableButton();

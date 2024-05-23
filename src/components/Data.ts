@@ -2,9 +2,7 @@ import { BaseModel } from './base/Events';
 import { IAppState, IOrder, IOrderForm, IProduct, FormErrors } from '../types/types';
 
 const emptyOrder: IOrder = {
-  items: [],
   payment: '',
-  total: null,
   address: '',
   email: '',
   phone: '',

@@ -53,15 +53,22 @@ export class Card extends Component<ICard> {
     actions?.onClick &&(this.elements.button ? this.elements.button.addEventListener('click', actions.onClick) : container.addEventListener('click', actions.onClick));
   }
 
+   // Установка состояния "selected"
+   set selected(value: boolean) {
+    if (this.elements.button) {
+      this.elements.button.disabled = value;
+      
+    }
+  }
+
   // Установка цены
   set price(value: number | null) {
     this.elements.price.textContent = value
       ? formatPrice(value) + ' синапсов'
       : 'Бесценно';
-    if (this.elements.button) {
-      this.elements.button.disabled = !value;
-    }
   }
+
+
 
   // Установка и получение ID
   set id(value: string) {
@@ -90,12 +97,7 @@ export class Card extends Component<ICard> {
     this.elements.image.src = CDN_URL + value;
   }
 
-  // Установка состояния "selected"
-  set selected(value: boolean) {
-    if (this.elements.button) {
-      this.elements.button.disabled = value;
-    }
-  }
+ 
   set index(value: number) {
 		if (this.elements.indexElement) {
 			this.elements.indexElement.textContent = value.toString();

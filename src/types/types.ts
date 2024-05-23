@@ -65,14 +65,6 @@ export interface IAppState {
   store: IProduct[];
   order: IOrder;
   formErrors: FormErrors;
-  manageBasket: {
-    addToBasket(value: IProduct): void;
-    deleteFromBasket(id: string): void;
-    clearBasket(): void;
-    getBasketAmount(): number;
-    getTotalBasketPrice(): number;
-    setItems(): void;
-  };
   setOrderField(field: keyof IOrderForm, value: string): void;
   validateContacts(): boolean;
   validateOrder(): boolean;

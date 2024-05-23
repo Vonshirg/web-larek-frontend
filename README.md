@@ -11,7 +11,6 @@ https://github.com/Vonshirg/web-larek-frontend.git
 2. [Использование](#использование)
 3. [Компоненты](#компоненты)
     - [Card](#card)
-    - [StoreItem](#storeitem)
     - [StoreItemPreview](#storeitempreview)
     - [Page](#page)
     - [AppState](#appstate)
@@ -77,13 +76,6 @@ npm run build
 - `set image(value: string)` - Устанавливает изображение карточки.
 - `set selected(value: boolean)` - Устанавливает состояние выбора карточки.
 
-### StoreItem
-
-Класс `StoreItem` расширяет `Card` и представляет элемент магазина.
-
-#### Методы
-
-- `constructor(container: HTMLElement, actions?: IClickMouseEvent)` - Инициализирует новый элемент магазина.
 
 ### StoreItemPreview
 
@@ -113,7 +105,7 @@ npm run build
 - `constructor(container: HTMLElement, events: IEvents)` - Инициализирует новую страницу.
 - `set lock(value: boolean)` - Устанавливает состояние блокировки страницы.
 - `set count(value: number)` - Устанавливает значение счетчика корзины.
-- `set store(items: HTMLElement[])` - Устанавливает элементы магазина.
+- `set storeItem(items: HTMLElement[])` - Устанавливает элементы магазина.
 
 ### AppState
 
@@ -140,6 +132,7 @@ npm run build
 - `validateOrderForm(): boolean` - Проверяет форму заказа на наличие ошибок.
 - `setProducts(items: IProduct[]): void` - Устанавливает список продуктов.
 - `resetOrder(): void` - Сбрасывает текущий заказ.
+- `prepareOrderForServer(): IOrder`-подготовка перед отправкой на сервер, сбор объекта.
 
 ### Component
 
