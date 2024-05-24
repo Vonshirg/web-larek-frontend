@@ -1,13 +1,11 @@
 import { IEvents } from './base/Events';
-import { Component } from './Data';
+import { Component } from './Components';
 import { ensureElement } from '../utils/utils';
 import {
 	FormState,
 	IOrder,
 	IOrderFormElements,
-	IClickMouseEvent,
 } from '../types/types';
-import { formatPrice } from './Basket';
 
 export class Form<T> extends Component<FormState> {
 	private submitButton: HTMLButtonElement;
@@ -32,7 +30,7 @@ export class Form<T> extends Component<FormState> {
 	}
 
 	set valid(isValid: boolean) {
-		this.setDisabled(this.submitButton,!isValid)
+		this.setDisabled(this.submitButton, !isValid);
 	}
 
 	set errors(errorMessages: string) {
@@ -82,15 +80,15 @@ export class Order extends Form<IOrder> {
 		// Добавление обработчиков событий
 		if (this.elements.cash) {
 			this.elements.cash.addEventListener('click', () => {
-				this.elements.card.classList.remove('button_alt-active');
+				this.toggleClass(this.elements.card, 'button_alt-active', false);
 				this.onInputChange('payment', 'cash');
-				this.elements.cash.classList.add('button_alt-active');
+				this.toggleClass(this.elements.cash, 'button_alt-active', true);
 			});
 		}
 		if (this.elements.card) {
 			this.elements.card.addEventListener('click', () => {
-				this.elements.card.classList.add('button_alt-active');
-				this.elements.cash.classList.remove('button_alt-active');
+				this.toggleClass(this.elements.card, 'button_alt-active', true);
+				this.toggleClass(this.elements.cash, 'button_alt-active', false);
 				this.onInputChange('payment', 'card');
 			});
 		}
@@ -98,30 +96,7 @@ export class Order extends Form<IOrder> {
 
 	// Метод для отключения активности кнопок
 	disableButtons() {
-		this.elements.cash.classList.remove('button_alt-active');
-		this.elements.card.classList.remove('button_alt-active');
-	}
-}
-
-export class Success extends Component<{ description: number }> {
-	protected closeButton: HTMLButtonElement; // Переименована переменная
-	protected descriptionElement: HTMLElement; // Переименована переменная
-
-	constructor(container: HTMLElement, actions?: IClickMouseEvent) {
-		super(container);
-
-		this.closeButton = container.querySelector('.order-success__close')!;
-		this.descriptionElement = container.querySelector(
-			'.order-success__description'
-		)!;
-
-		if (actions?.onClick && this.closeButton) {
-			this.closeButton.addEventListener('click', actions.onClick);
-		}
-	}
-	set description(value: number) {
-		this.descriptionElement.textContent = `Списано ${formatPrice(
-			value
-		)} синапсов`;
+		this.toggleClass(this.elements.cash, 'button_alt-active', false);
+		this.toggleClass(this.elements.card, 'button_alt-active', false);
 	}
 }

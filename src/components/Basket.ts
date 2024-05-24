@@ -1,6 +1,6 @@
 import { IBasket, IComponentElements } from '../types/types';
 import { IEvents } from './base/Events';
-import { Component } from './Data';
+import { Component } from './Components';
 
 
 export class Basket extends Component<IBasket> {

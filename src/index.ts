@@ -4,58 +4,60 @@ import { EventEmitter } from './components/base/Events';
 import { IOrderForm, IProduct } from './types/types';
 import { API_URL } from './utils/constants';
 import { Basket,  } from './components/Basket';
-import { Order, Success, Form } from './components/Order';
+import { Order, Form } from './components/Order';
 import { IEvents } from './components/base/Events';
-import { Page } from './components/Card';
+import { Page } from './components/Page';
 import { Card, StoreItemPreview } from './components/Card';
 import { AppState } from './components/Data';
 import { ensureElement, cloneTemplate } from './utils/utils';
+import {  Success } from './components/Success';
 
-// Функция для создания модального окна
-function createModal(container: HTMLElement, events: IEvents) {
-	const closeButton = ensureElement<HTMLButtonElement>(
-		'.modal__close',
-		container
-	);
-	const content = ensureElement<HTMLElement>('.modal__content', container);
+// Класс для создания модального окна
+class Modal {
+	private closeButton: HTMLButtonElement;
+	private content: HTMLElement;
+	private container: HTMLElement;
+	private events: IEvents;
 
-	closeButton.addEventListener('click', close);
-	container.addEventListener('mousedown', close);
-	content.addEventListener('mousedown', (event) => event.stopPropagation());
+	constructor(container: HTMLElement, events: IEvents) {
+		this.container = container;
+		this.events = events;
 
-	function setContent(value: HTMLElement) {
-		content.replaceChildren(value);
+		this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
+		this.content = ensureElement<HTMLElement>('.modal__content', container);
+
+		this.closeButton.addEventListener('click', this.close.bind(this));
+		this.container.addEventListener('mousedown', this.close.bind(this));
+		this.content.addEventListener('mousedown', (event) => event.stopPropagation());
 	}
 
-	function open() {
-		container.classList.add('modal_active');
-		events.emit('modal:open');
+	setContent(value: HTMLElement): void {
+		this.content.replaceChildren(value);
 	}
 
-	function close() {
-		container.classList.remove('modal_active');
-		setContent(null);
-		events.emit('modal:close');
+	open(): void {
+		this.container.classList.add('modal_active');
+		this.events.emit('modal:open');
 	}
 
-	function render(data: { content: HTMLElement }): HTMLElement {
-		setContent(data.content);
-		open();
-		return container;
+	close(): void {
+		this.container.classList.remove('modal_active');
+		this.setContent(null);
+		this.events.emit('modal:close');
 	}
 
-	return {
-		open,
-		close,
-		render,
-	};
+	render(data: { content: HTMLElement }): HTMLElement {
+		this.setContent(data.content);
+		this.open();
+		return this.container;
+	}
 }
 
 const api = new Api(API_URL);
 const events = new EventEmitter();
 const appData = new AppState({}, events);
 const page = new Page(document.body, events);
-const modal = createModal(
+const modal = new Modal(
 	ensureElement<HTMLElement>('#modal-container'),
 	events
 );
@@ -140,9 +142,11 @@ function handleCardSelect(item: IProduct) {
 }
 
 function handleCardToBasket(item: IProduct) {
-	item.selected = true;
-	appData.addProductToCart(item);
-	page.count = appData.getCartItemCount();
+	const isProductInCart = appData.cart.find((product) => product.id === item.id); // Проверяем наличие товара в корзине
+	if (!isProductInCart) {
+		appData.addProductToCart(item);
+		page.count = appData.getCartItemCount();
+	}
 	modal.close();
 }
 

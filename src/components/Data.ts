@@ -70,7 +70,7 @@ export class AppState extends BaseModel<IAppState> {
 
 		// Проверка email и телефона через паттерны
 		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Простой паттерн для валидации email
-		const phonePattern = /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$|^\d+$/; // Пример паттерна для международного номера телефона
+		const phonePattern = /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$|^\d+$/; // Пример паттерна для международного номера телефона например +7 (999) 999-99-99 или возможен ввод только цифр
 
 		if (!emailPattern.test(this.currentOrder.email)) {
 			errors.email = 'Укажите корректный email';
@@ -106,41 +106,4 @@ export class AppState extends BaseModel<IAppState> {
 	}
 }
 
-// Класс Component
-export abstract class Component<T> {
-	protected constructor(protected readonly container: HTMLElement) {}
 
-	setDisabled(elem: HTMLElement, state: boolean): void {
-		elem.toggleAttribute('disabled', state);
-	}
-
-	protected setText(elem: HTMLElement, value: string): void {
-		elem.textContent = value;
-	}
-
-	toggleClass(elem: HTMLElement, className: string, force?: boolean): void {
-		elem.classList.toggle(className, force);
-	}
-
-	protected setHidden(elem: HTMLElement): void {
-		elem.style.display = 'none';
-	}
-
-	render(data?: Partial<T>): HTMLElement {
-		if (data) {
-			Object.assign(this, data);
-		}
-		return this.container;
-	}
-
-	protected setVisible(elem: HTMLElement): void {
-		elem.style.display = '';
-	}
-
-	protected setImage(elem: HTMLImageElement, src: string, alt?: string): void {
-		elem.src = src;
-		if (alt) {
-			elem.alt = alt;
-		}
-	}
-}

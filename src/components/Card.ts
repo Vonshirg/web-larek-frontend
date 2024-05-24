@@ -1,14 +1,11 @@
-import { Component } from './Data';
+import { Component } from './Components';
 import {
 	CategoryType,
 	ICard,
 	IClickMouseEvent,
-	IPageElements,
-	IPage,
 } from '../types/types';
 import { ensureElement } from '../utils/utils';
 import { CDN_URL } from '../utils/constants';
-import { IEvents } from './base/Events';
 import { formatPrice } from './Basket';
 
 // Интерфейс для элементов карточки
@@ -78,7 +75,7 @@ export class Card extends Component<ICard> {
 
 	// Установка категории
 	set category(value: CategoryType) {
-		this.elements.category.textContent = value;
+		this.setText(this.elements.category, value)
 		this.elements.category.classList.add(categoryClasses[value]);
 	}
 
@@ -119,47 +116,4 @@ export class StoreItemPreview extends Card {
 	}
 }
 
-// Класс для страницы
-export class Page extends Component<IPage> {
-	protected elements: IPageElements;
 
-	constructor(container: HTMLElement, protected events: IEvents) {
-		super(container);
-
-		// Получение элементов DOM и объединение их в объект
-		this.elements = {
-			counter: ensureElement<HTMLElement>('.header__basket-counter'),
-			wrapper: ensureElement<HTMLElement>('.page__wrapper'),
-			basket: ensureElement<HTMLElement>('.header__basket'),
-			store: ensureElement<HTMLElement>('.gallery'),
-		};
-
-		// Добавление обработчика события на корзину
-		this.elements.basket.addEventListener('click', () => {
-			this.events.emit('basket:open');
-		});
-	}
-
-	// Установка состояния "locked"
-	set lock(value: boolean) {
-		value
-			? this.elements.wrapper.classList.add('page__wrapper_locked')
-			: this.elements.wrapper.classList.remove('page__wrapper_locked');
-	}
-
-	// Установка счетчика
-	set count(value: number) {
-		this.setText(this.elements.counter, String(value));
-	}
-
-	// Установка элементов магазина
-	set storeItem(items: HTMLElement[]) {
-		// Очистка текущих элементов
-		this.elements.store.innerHTML = '';
-
-		// Добавление новых элементов
-		items.forEach(item => {
-			this.elements.store.appendChild(item);
-		});
-	}
-}
