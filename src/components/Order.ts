@@ -7,13 +7,7 @@ import {
 	IOrderFormElements,
 	IClickMouseEvent,
 } from '../types/types';
-
-function formatPrice(price: number): string {
-	const priceStr = price.toString();
-	return priceStr.length < 5
-		? priceStr
-		: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-}
+import { formatPrice } from './Basket';
 
 export class Form<T> extends Component<FormState> {
 	private submitButton: HTMLButtonElement;
@@ -106,12 +100,6 @@ export class Order extends Form<IOrder> {
 	disableButtons() {
 		this.elements.cash.classList.remove('button_alt-active');
 		this.elements.card.classList.remove('button_alt-active');
-	}
-}
-
-export class Contacts extends Form<IOrder> {
-	constructor(container: HTMLFormElement, events: IEvents) {
-		super(container, events);
 	}
 }
 

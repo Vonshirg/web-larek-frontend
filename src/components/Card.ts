@@ -9,6 +9,7 @@ import {
 import { ensureElement } from '../utils/utils';
 import { CDN_URL } from '../utils/constants';
 import { IEvents } from './base/Events';
+import { formatPrice } from './Basket';
 
 // Интерфейс для элементов карточки
 interface ICardElements {
@@ -28,13 +29,6 @@ const categoryClasses: Record<CategoryType, string> = {
 	[CategoryType.BUTTON]: 'card__category_button',
 	[CategoryType.HARD_SKILL]: 'card__category_hard',
 };
-
-function formatPrice(price: number): string {
-	const priceStr = price.toString();
-	return priceStr.length < 5
-		? priceStr
-		: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-}
 
 // Класс для карточки товара
 export class Card extends Component<ICard> {

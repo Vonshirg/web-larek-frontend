@@ -48,7 +48,7 @@ export class Basket extends Component<IBasket> {
   }
 }
 
-function formatPrice(price: number): string {
+export function formatPrice(price: number): string {
   const priceStr = price.toString();
   return priceStr.length < 5
     ? priceStr

@@ -4,7 +4,7 @@ import { EventEmitter } from './components/base/Events';
 import { IOrderForm, IProduct } from './types/types';
 import { API_URL } from './utils/constants';
 import { Basket,  } from './components/Basket';
-import { Order, Contacts, Success } from './components/Order';
+import { Order, Success, Form } from './components/Order';
 import { IEvents } from './components/base/Events';
 import { Page } from './components/Card';
 import { Card, StoreItemPreview } from './components/Card';
@@ -84,7 +84,7 @@ const [
 
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
-const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+const form = new Form(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), {
 	onClick: () => modal.close(),
 });
@@ -196,8 +196,8 @@ function handleOrderFormErrors(errors: Partial<IOrderForm>) {
 
 function handleContactsFormErrors(errors: Partial<IOrderForm>) {
 	const { email, phone } = errors;
-	contacts.valid = !email && !phone;
-	contacts.errors = Object.values({ phone, email }).filter(Boolean).join('; ');
+	form.valid = !email && !phone;
+	form.errors = Object.values({ phone, email }).filter(Boolean).join('; ');
 }
 
 function handleOrderInputChange(data: {
@@ -211,7 +211,7 @@ function handleOrderSubmit() {
 	// Обновляем текущий заказ, вычисляя общую стоимость и список товаров
 	const preparedOrder = appData.prepareOrderForServer();
 	modal.render({
-		content: contacts.render({ valid: false, errors: [] }),
+		content: form.render({ valid: false, errors: [] }),
 	});
 }
 
