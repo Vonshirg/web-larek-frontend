@@ -63,7 +63,7 @@ export class Card extends Component<ICard> {
 	// Установка состояния "selected"
 	set selected(value: boolean) {
 		if (this.elements.button) {
-			this.elements.button.disabled = value;
+			this.setDisabled(this.elements.button, value)
 		}
 	}
 
@@ -90,7 +90,7 @@ export class Card extends Component<ICard> {
 
 	// Установка и получение заголовка
 	set title(value: string) {
-		this.elements.title.textContent = value;
+		this.setText(this.elements.title, value)
 	}
 	get title(): string {
 		return this.elements.title.textContent || '';
@@ -98,12 +98,14 @@ export class Card extends Component<ICard> {
 
 	// Установка изображения
 	set image(value: string) {
-		this.elements.image.src = CDN_URL + value;
+		let src = CDN_URL + value;
+		this.setImage(this.elements.image, src)
 	}
 
 	set index(value: number) {
 		if (this.elements.indexElement) {
-			this.elements.indexElement.textContent = value.toString();
+			let text = value.toString();
+			this.setText(this.elements.indexElement, text)
 		}
 	}
 }
@@ -119,7 +121,7 @@ export class StoreItemPreview extends Card {
 
 	// Установка текста описания
 	set descriptionText(value: string) {
-		this.description.textContent = value;
+		this.setText(this.description, value)
 	}
 }
 
@@ -158,11 +160,12 @@ export class Page extends Component<IPage> {
 
 	// Установка элементов магазина
 	set storeItem(items: HTMLElement[]) {
-		const fragment = document.createDocumentFragment();
-		for (const item of items) {
-			fragment.appendChild(item);
-		}
+		// Очистка текущих элементов
 		this.elements.store.innerHTML = '';
-		this.elements.store.appendChild(fragment);
+
+		// Добавление новых элементов
+		items.forEach(item => {
+			this.elements.store.appendChild(item);
+		});
 	}
 }

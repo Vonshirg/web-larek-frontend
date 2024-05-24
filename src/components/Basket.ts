@@ -1,64 +1,57 @@
-import {
-	IBasket,
-	IComponentElements
-} from '../types/types';
+import { IBasket, IComponentElements } from '../types/types';
 import { IEvents } from './base/Events';
 import { Component } from './Data';
 
-// Класс для корзины
+
 export class Basket extends Component<IBasket> {
-	private elements: IComponentElements;
-	constructor(container: HTMLElement, protected events: IEvents) {
-		super(container);
+  private elements: IComponentElements;
 
-		// Инициализация элементов DOM
-		this.elements = {
-			listElement: container.querySelector('.basket__list')!,
-			priceElement: container.querySelector('.basket__price')!,
-			buttonElement: container.querySelector('.basket__button')!,
-		};
+  constructor(container: HTMLElement, protected events: IEvents) {
+    super(container);
 
-		// Добавление обработчика события на кнопку
-		if (this.elements.buttonElement) {
-			this.elements.buttonElement.addEventListener('click', () =>
-				this.events.emit('basket:order')
-			);
-		}
-	}
+    this.elements = {
+      listElement: container.querySelector('.basket__list')!,
+      priceElement: container.querySelector('.basket__price')!,
+      buttonElement: container.querySelector('.basket__button')!,
+    };
 
-	// Установка списка элементов
-	set list(items: HTMLElement[]) {
-		if (this.elements.listElement) {
-			this.elements.listElement.replaceChildren(...items);
-			this.elements.buttonElement.disabled = items.length === 0;
-		}
-	}
+    if (this.elements.buttonElement) {
+      this.elements.buttonElement.addEventListener('click', () =>
+        this.events.emit('basket:order')
+      );
+    }
+  }
 
-	// Установка цены
-	set price(price: number) {
-		this.elements.priceElement.textContent = formatPrice(price) + ' синапсов';
-	}
+  set list(items: HTMLElement[]) {
+    if (this.elements.listElement) {
+      this.elements.listElement.replaceChildren(...items);
+      this.elements.buttonElement.disabled = items.length === 0;
+    }
+  }
 
-	// Отключение кнопки
-	disableButton() {
-		this.elements.buttonElement.disabled = true;
-	}
+  set price(price: number) {
+    this.elements.priceElement.textContent = formatPrice(price) + ' синапсов';
+  }
 
-	// Обновление индексов элементов списка
-	refreshIndices() {
-		if (this.elements.listElement) {
-			Array.from(this.elements.listElement.children).forEach((item, index) => {
-				const indexElement = item.querySelector('.basket__item-index');
-				if (indexElement) {
-					indexElement.textContent = (index + 1).toString();
-				}
-			});
-		}
-	}
+  disableButton() {
+    this.setDisabled(this.elements.buttonElement, true);
+  }
+
+  // Обновление индексов товаров в корзине
+  refreshIndices(cards: HTMLElement[]) {
+    cards.forEach((item, index) => {
+      const indexElement = item.querySelector('.basket__item-index');
+      if (indexElement) {
+        indexElement.textContent = (index + 1).toString();
+      }
+    });
+  }
 }
+
 function formatPrice(price: number): string {
-	const priceStr = price.toString();
-	return priceStr.length < 5
-		? priceStr
-		: priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  const priceStr = price.toString();
+  return priceStr.length < 5
+    ? priceStr
+    : priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
+
