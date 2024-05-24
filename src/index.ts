@@ -212,8 +212,6 @@ function handleOrderInputChange(data: {
 }
 
 function handleOrderSubmit() {
-	// Обновляем текущий заказ, вычисляя общую стоимость и список товаров
-	const preparedOrder = appData.prepareOrderForServer();
 	modal.render({
 		content: form.render({ valid: false, errors: [] }),
 	});

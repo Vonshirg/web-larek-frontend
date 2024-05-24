@@ -102,7 +102,6 @@ export interface IClickMouseEvent {
 }
 
 export interface IProductBasket extends IProduct {
-	id: string;
 	index: number;
 }
 
