@@ -99,7 +99,6 @@ export class Card extends Component<ICard> {
     }
   }
 
-
 	set index(value: number) {
 		if (this.elements.indexElement) {
 			let text = value.toString();
