@@ -31,10 +31,6 @@ export class AppState extends BaseModel<IAppState> {
 		);
 	}
 
-	deselectAllProducts(): void {
-		this.products.forEach((product) => (product.selected = false));
-	}
-
 	addProductToCart(product: IProduct): void {
 		this.cart.push(product);
 	}
@@ -70,13 +66,16 @@ export class AppState extends BaseModel<IAppState> {
 
 		// Проверка email и телефона через паттерны
 		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Простой паттерн для валидации email
-		const phonePattern = /^\+\d{1,3}\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$|^\d+$/; // Пример паттерна для международного номера телефона например +7 (999) 999-99-99 или возможен ввод только цифр
+		/* обновленный паттерн для номера телефона - поддерживает форматы 
+ 		+7 (999) 999-99-99, 8 (999) 999-99-99, 9999999999, +1 (999) 999-9999999-999-9999*/   
+		const phonePattern = /^\+?\d{0,3}\s?\(?\d{0,3}\)?\s?\d{0,3}-?\d{0,2}-?\d{0,2}$/; 
+		
 
 		if (!emailPattern.test(this.currentOrder.email)) {
 			errors.email = 'Укажите корректный email';
 		}
 		if (!phonePattern.test(this.currentOrder.phone)) {
-			errors.phone = 'Укажите корректный номер телефона';
+			errors.phone = 'Укажите номер телефона в международном формате например (+7 (999) 999-99-99) или введите только цифры';
 		}
 
 		// Сохранение ошибок и отправка событий

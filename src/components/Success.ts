@@ -1,8 +1,8 @@
-import { Component } from './Components';
+import { Component } from './Component';
 import {
 	IClickMouseEvent,
 } from '../types/types';
-import { formatPrice } from './Basket';
+import { formatPrice } from '../utils/utils';
 
 export class Success extends Component<{ description: number }> {
 	protected closeButton: HTMLButtonElement; // Переименована переменная

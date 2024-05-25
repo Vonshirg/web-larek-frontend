@@ -4,54 +4,16 @@ import { EventEmitter } from './components/base/Events';
 import { IOrderForm, IProduct } from './types/types';
 import { API_URL } from './utils/constants';
 import { Basket,  } from './components/Basket';
-import { Order, Form } from './components/Order';
-import { IEvents } from './components/base/Events';
+import { Order} from './components/Order';
+import { Form } from './components/Form';
 import { Page } from './components/Page';
 import { Card, StoreItemPreview } from './components/Card';
 import { AppState } from './components/Data';
 import { ensureElement, cloneTemplate } from './utils/utils';
 import {  Success } from './components/Success';
+import {  Modal } from './components/Modal';
 
-// Класс для создания модального окна
-class Modal {
-	private closeButton: HTMLButtonElement;
-	private content: HTMLElement;
-	private container: HTMLElement;
-	private events: IEvents;
 
-	constructor(container: HTMLElement, events: IEvents) {
-		this.container = container;
-		this.events = events;
-
-		this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
-		this.content = ensureElement<HTMLElement>('.modal__content', container);
-
-		this.closeButton.addEventListener('click', this.close.bind(this));
-		this.container.addEventListener('mousedown', this.close.bind(this));
-		this.content.addEventListener('mousedown', (event) => event.stopPropagation());
-	}
-
-	setContent(value: HTMLElement): void {
-		this.content.replaceChildren(value);
-	}
-
-	open(): void {
-		this.container.classList.add('modal_active');
-		this.events.emit('modal:open');
-	}
-
-	close(): void {
-		this.container.classList.remove('modal_active');
-		this.setContent(null);
-		this.events.emit('modal:close');
-	}
-
-	render(data: { content: HTMLElement }): HTMLElement {
-		this.setContent(data.content);
-		this.open();
-		return this.container;
-	}
-}
 
 const api = new Api(API_URL);
 const events = new EventEmitter();
@@ -130,16 +92,11 @@ function handleCardSelect(item: IProduct) {
 	const product = new StoreItemPreview(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit('card:toBasket', item),
 	});
-	if (!item.price) {
-		modal.render({
-			content: product.render({ ...item, selected: true }),
-		});
-	} else {
-		modal.render({
-			content: product.render({ ...item, selected: item.selected }),
-		});
-	}
+	modal.render({
+		content: product.render(item),
+	});
 }
+
 
 function handleCardToBasket(item: IProduct) {
 	const isProductInCart = appData.cart.find((product) => product.id === item.id); // Проверяем наличие товара в корзине
@@ -154,8 +111,6 @@ function handleBasketDelete(item: IProduct) {
   // Удаление товара из корзины
   appData.removeProductFromCart(item.id);
   
-  // Снятие выделения с товара
-  item.selected = false;
   
   // Обновление цены корзины
   basket.price = appData.calculateTotalCartPrice();
@@ -171,19 +126,19 @@ function handleBasketDelete(item: IProduct) {
     const storeItem = new Card(cloneTemplate(cardBasketTemplate), {
       onClick: () => events.emit('basket:delete', cartItem),
     });
-    return storeItem.render({ 
-      title: cartItem.title, 
-      price: cartItem.price, 
-      index: index + 1 
-    });
+    const renderedItem = storeItem.render({ title: cartItem.title, price: cartItem.price, index: index + 1 });
+    storeItem.updateIndex(index + 1); // Обновление индекса товара
+    return renderedItem;
   });
-  basket.refreshIndices(basketItems);
+
+  basket.list = basketItems;
 
   // Отключение кнопки, если корзина пуста
   if (!appData.cart.length) {
     basket.disableButton();
   }
 }
+
 
 
 function handleBasketOrder() {
@@ -223,16 +178,18 @@ function openBasket() {
     const storeItem = new Card(cloneTemplate(cardBasketTemplate), {
       onClick: () => events.emit('basket:delete', item),
     });
-    return storeItem.render({ title: item.title, price: item.price, index: index + 1 });
+    const renderedItem = storeItem.render({ title: item.title, price: item.price, index: index + 1 });
+    storeItem.updateIndex(index + 1); // Обновление индекса товара
+    return renderedItem;
   });
   
   // Рендеринг корзины с обновленным списком товаров и общей ценой
   modal.render({
     content: basket.render({ list: basketItems, price: appData.calculateTotalCartPrice() }),
   });
-  
-  // Обновление индексов товаров в корзине
-  basket.refreshIndices(basketItems);
+
+  // Обновление списка товаров в корзине
+  basket.list = basketItems;
 }
 
 
@@ -246,7 +203,7 @@ function handleContactsSubmit() {
 			appData.resetOrder();
 			order.disableButtons();
 			page.count = 0;
-			appData.deselectAllProducts();
+			
 		})
 		.catch((err) => console.log(err));
 }

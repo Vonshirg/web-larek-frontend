@@ -6,6 +6,10 @@ export enum CategoryType {
 	HARD_SKILL = 'хард-скил',
 }
 
+export interface IModalData {
+	content: HTMLElement;
+}
+
 export interface ICard {
 	id: string;
 	title: string;
@@ -112,5 +116,5 @@ export interface IProduct {
 	title: string;
 	category: CategoryType;
 	price: number | null;
-	selected: boolean;
+	/*selected: boolean;*/
 }

@@ -1,4 +1,4 @@
-import { Component } from './Components';
+import { Component } from './Component';
 import {
 	CategoryType,
 	ICard,
@@ -6,7 +6,7 @@ import {
 } from '../types/types';
 import { ensureElement } from '../utils/utils';
 import { CDN_URL } from '../utils/constants';
-import { formatPrice } from './Basket';
+
 
 // Интерфейс для элементов карточки
 interface ICardElements {
@@ -60,9 +60,9 @@ export class Card extends Component<ICard> {
 
 	// Установка цены
 	set price(value: number | null) {
-		this.elements.price.textContent = value
-			? formatPrice(value) + ' синапсов'
-			: 'Бесценно';
+		if(value){
+			this.setText(this.elements.price, String(value) + ' синапсов')
+		} else{this.setText(this.elements.price, 'Бесценно')}
 	}
 
 	// Установка и получение ID
@@ -92,6 +92,13 @@ export class Card extends Component<ICard> {
 		let src = CDN_URL + value;
 		this.setImage(this.elements.image, src)
 	}
+
+	updateIndex(index: number) {
+    if (this.elements.indexElement) {
+      this.setText(this.elements.indexElement,index.toString())
+    }
+  }
+
 
 	set index(value: number) {
 		if (this.elements.indexElement) {

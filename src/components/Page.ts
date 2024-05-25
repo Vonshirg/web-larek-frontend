@@ -1,4 +1,4 @@
-import { Component } from './Components';
+import { Component } from './Component';
 import { ensureElement } from '../utils/utils';
 import { IEvents } from './base/Events';
 import { IPageElements, IPage } from '../types/types';

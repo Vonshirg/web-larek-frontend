@@ -1,6 +1,7 @@
 import { IBasket, IComponentElements } from '../types/types';
 import { IEvents } from './base/Events';
-import { Component } from './Components';
+import { Component } from './Component';
+import { formatPrice } from '../utils/utils';
 
 
 export class Basket extends Component<IBasket> {
@@ -36,22 +37,7 @@ export class Basket extends Component<IBasket> {
   disableButton() {
     this.setDisabled(this.elements.buttonElement, true);
   }
-
-  // Обновление индексов товаров в корзине
-  refreshIndices(cards: HTMLElement[]) {
-    cards.forEach((item, index) => {
-      const indexElement = item.querySelector('.basket__item-index');
-      if (indexElement) {
-        indexElement.textContent = (index + 1).toString();
-      }
-    });
-  }
 }
 
-export function formatPrice(price: number): string {
-  const priceStr = price.toString();
-  return priceStr.length < 5
-    ? priceStr
-    : priceStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-}
+
 
