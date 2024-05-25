@@ -75,7 +75,7 @@ events.on('order:success', handleOrderSuccess);
 function updateStoreItems() {
 	page.storeItem = appData.products.map((item) => {
 		const product = new Card(cloneTemplate(storeProductTemplate), {
-			onClick: () => events.emit('card:select', item),
+			onClick: () => handleCardSelect(item),
 		});
 		return product.render({
 			id: item.id,
@@ -87,14 +87,21 @@ function updateStoreItems() {
 	});
 }
 
+
 function handleCardSelect(item: IProduct) {
 	page.lock = true;
 	const product = new StoreItemPreview(cloneTemplate(cardPreviewTemplate), {
 		onClick: () => events.emit('card:toBasket', item),
 	});
-	modal.render({
-		content: product.render(item),
-	});
+	if (!item.price) {
+		modal.render({
+			content: product.render({ ...item, selected: true }),
+		});
+	} else {
+		modal.render({
+			content: product.render({ ...item, selected: item.selected }),
+		});
+	}
 }
 
 
